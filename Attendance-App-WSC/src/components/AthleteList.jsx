@@ -33,7 +33,6 @@ export default function AthleteList() {
       selectedAthletes.filter((selected) => selected.id !== athlete.id)
     );
   }
-
   return (
     <div className="container my-4">
       <div className="form-group">
@@ -58,7 +57,7 @@ export default function AthleteList() {
               className="img-fluid rounded-circle mr-3"
               style={{ width: "50px" }}
             />
-            <h3 className="card-title mb-0">{athlete.name}</h3>
+            <h3 className="card-title mb-0 flex-grow-1">{athlete.name}</h3>
             <button
               className="btn btn-danger ml-auto"
               onClick={() => handleUndo(athlete)}
