@@ -8,24 +8,80 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/attendance", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Replace with your MongoDB Atlas connection string
+mongoose.connect(
+  "mongodb+srv://scottyeansor:scottyeansor@cluster0.ddt668f.mongodb.net/WSCattendance?retryWrites=true&w=majority&appName=Cluster0",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
-  console.log("Connected to MongoDB");
+  console.log("Connected to MongoDB Atlas");
 });
 
-// Routes
-const athleteRoutes = require("./routes/athletes");
-const coachRoutes = require("./routes/coaches");
+// Athlete model
+const athleteSchema = new mongoose.Schema({
+  name: String,
+  attendance: Array,
+});
 
-app.use("/api/athletes", athleteRoutes);
-app.use("/api/coaches", coachRoutes);
+const Athlete = mongoose.model("Athlete", athleteSchema);
+
+// Coach model
+const coachSchema = new mongoose.Schema({
+  coach_name: String,
+  image: String,
+});
+
+const Coach = mongoose.model("Coach", coachSchema);
+
+// Routes
+app.get("/api/athletes", async (req, res) => {
+  try {
+    const athletes = await Athlete.find();
+    res.json(athletes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/api/athletes", async (req, res) => {
+  const athlete = new Athlete({
+    name: req.body.name,
+  });
+  try {
+    const newAthlete = await athlete.save();
+    res.status(201).json(newAthlete);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+app.get("/api/coaches", async (req, res) => {
+  try {
+    const coaches = await Coach.find();
+    res.json(coaches);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/api/coaches", async (req, res) => {
+  const coach = new Coach({
+    coach_name: req.body.name,
+    image: req.body.image, // assuming you have an image field
+  });
+  try {
+    const newCoach = await coach.save();
+    res.status(201).json(newCoach);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
