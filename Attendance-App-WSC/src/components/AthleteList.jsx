@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function AthleteList() {
+export default function AthleteList({
+  selectedDate,
+  handleAddAttendance,
+  handleRemoveAttendance,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAthletes, setSelectedAthletes] = useState([]);
+  const [athletes, setAthletes] = useState([]);
 
-  const athletes = [
-    { id: 1, name: "Tyson", image: "exampleImg.jpg" },
-    { id: 2, name: "Winston", image: "exampleImg.jpg" },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:5000/api/athletes")
+      .then((response) => response.json())
+      .then((data) => setAthletes(data))
+      .catch((error) => console.error("Error fetching athletes:", error));
+  }, []);
 
   const filteredAthletes = athletes.filter((athlete) =>
     athlete.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -21,6 +28,7 @@ export default function AthleteList() {
   function handleAthleteSelect(athlete) {
     if (!selectedAthletes.find((selected) => selected.id === athlete.id)) {
       setSelectedAthletes([...selectedAthletes, athlete]);
+      handleAddAttendance(athlete, { coach_name: "Placeholder Coach" }); // Pass a placeholder coach for now
     }
   }
 
@@ -32,7 +40,9 @@ export default function AthleteList() {
     setSelectedAthletes(
       selectedAthletes.filter((selected) => selected.id !== athlete.id)
     );
+    handleRemoveAttendance(athlete, { coach_name: "Placeholder Coach" }); // Pass a placeholder coach for now
   }
+
   return (
     <div className="container my-4">
       <div className="form-group">
@@ -52,7 +62,7 @@ export default function AthleteList() {
         >
           <div className="card-body d-flex align-items-center">
             <img
-              src={athlete.image}
+              src="exampleImg.jpg"
               alt={athlete.name}
               className="img-fluid rounded-circle mr-3"
               style={{ width: "50px" }}
