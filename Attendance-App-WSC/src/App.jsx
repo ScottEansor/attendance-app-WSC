@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Coach from "./components/Coach";
 import AthleteList from "./components/AthleteList";
 import Tracking from "./components/Tracking";
+import AddPeople from "./components/AddPeople";
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(
@@ -67,6 +68,7 @@ function App() {
               <Tracking attendance={attendance} selectedDate={selectedDate} />
             }
           />
+          <Route path="/add-people" element={<AddPeople />} />
         </Routes>
       </div>
     </Router>

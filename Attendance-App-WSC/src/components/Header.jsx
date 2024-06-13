@@ -25,6 +25,11 @@ export default function Header() {
                 Tracking
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/add-people">
+                Add People
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

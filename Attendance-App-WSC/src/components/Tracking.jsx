@@ -1,11 +1,23 @@
-import React, { useState } from "react";
-import athletes from "../../../Mock_Data.json"; // Import the mock data for athletes
-import mockCoaches from "../../../MOCK_DATA_COACHES.json"; // Import the mock data for coaches
+import React, { useState, useEffect } from "react";
 
 export default function Tracking({ attendance, selectedDate }) {
   const [date, setDate] = useState(selectedDate);
   const [selectedCoachId, setSelectedCoachId] = useState("");
   const [selectedAbsenceDate, setSelectedAbsenceDate] = useState("");
+  const [athletes, setAthletes] = useState([]);
+  const [coaches, setCoaches] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/athletes")
+      .then((response) => response.json())
+      .then((data) => setAthletes(data))
+      .catch((error) => console.error("Error fetching athletes:", error));
+
+    fetch("http://localhost:5000/api/coaches")
+      .then((response) => response.json())
+      .then((data) => setCoaches(data))
+      .catch((error) => console.error("Error fetching coaches:", error));
+  }, []);
 
   function handleDateChange(event) {
     setDate(event.target.value);
@@ -53,7 +65,7 @@ export default function Tracking({ attendance, selectedDate }) {
     return missedCount >= 3;
   });
 
-  const coach = mockCoaches.find((coach) => coach.id === +selectedCoachId);
+  const coach = coaches.find((coach) => coach.id === +selectedCoachId);
   const selectedCoachAthletes =
     (attendance[date] && attendance[date][coach?.coach_name]) || [];
 
@@ -86,7 +98,7 @@ export default function Tracking({ attendance, selectedDate }) {
             onChange={handleCoachChange}
           >
             <option value="">Select a coach</option>
-            {mockCoaches.map((coach) => (
+            {coaches.map((coach) => (
               <option key={coach.id} value={coach.id}>
                 {coach.coach_name}
               </option>

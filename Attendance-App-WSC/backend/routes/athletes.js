@@ -12,6 +12,19 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Add a new athlete
+router.post("/", async (req, res) => {
+  const athlete = new Athlete({
+    name: req.body.name,
+  });
+  try {
+    const newAthlete = await athlete.save();
+    res.status(201).json(newAthlete);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // Add attendance for an athlete
 router.post("/:id/attendance", async (req, res) => {
   try {
