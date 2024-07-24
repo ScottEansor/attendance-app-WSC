@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -10,7 +12,7 @@ app.use(express.json());
 
 // Replace with your MongoDB Atlas connection string
 mongoose.connect(
-  "mongodb+srv://scottyeansor:scottyeansor@cluster0.ddt668f.mongodb.net/WSCattendance?retryWrites=true&w=majority&appName=Cluster0",
+  process.env.MONGO_URI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
